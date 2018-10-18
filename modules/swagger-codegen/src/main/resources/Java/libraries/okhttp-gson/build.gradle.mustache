@@ -16,30 +16,25 @@ buildscript {
 
 repositories {
     jcenter()
+    maven {
+        url "https://maven.google.com"
+    }
 }
 
-
-if(hasProperty('target') && target == 'android') {
 
     apply plugin: 'com.android.library'
     apply plugin: 'com.github.dcendents.android-maven'
 
     android {
-        compileSdkVersion 25
+        compileSdkVersion 27
         buildToolsVersion '25.0.2'
         defaultConfig {
             minSdkVersion 14
-            targetSdkVersion 25
+            targetSdkVersion 27
         }
         compileOptions {
-            {{#java8}}
             sourceCompatibility JavaVersion.VERSION_1_8
             targetCompatibility JavaVersion.VERSION_1_8
-            {{/java8}}
-            {{^java8}}
-            sourceCompatibility JavaVersion.VERSION_1_7
-            targetCompatibility JavaVersion.VERSION_1_7
-            {{/java8}}
         }
 
         // Rename the aar correctly
@@ -79,32 +74,14 @@ if(hasProperty('target') && target == 'android') {
         archives sourcesJar
     }
 
-} else {
-
-    apply plugin: 'java'
-    apply plugin: 'maven'
-
-    sourceCompatibility = JavaVersion.VERSION_{{^java8}}1_7{{/java8}}{{#java8}}1_8{{/java8}}
-    targetCompatibility = JavaVersion.VERSION_{{^java8}}1_7{{/java8}}{{#java8}}1_8{{/java8}}
-
-    install {
-        repositories.mavenInstaller {
-            pom.artifactId = '{{artifactId}}'
-        }
-    }
-
-    task execute(type:JavaExec) {
-       main = System.getProperty('mainClass')
-       classpath = sourceSets.main.runtimeClasspath
-    }
-}
 
 dependencies {
+    compile 'com.android.support:appcompat-v7:27.1.1'
     compile 'io.swagger:swagger-annotations:1.5.17'
-    compile 'com.squareup.okhttp:okhttp:2.7.5'
-    compile 'com.squareup.okhttp:logging-interceptor:2.7.5'
     compile 'com.google.code.gson:gson:2.8.1'
+    compile 'com.squareup.okio:okio:2.1.0'
     compile 'io.gsonfire:gson-fire:1.8.0'
+    compile 'com.ca:mas-foundation:1.7.10'
     {{#joda}}
     compile 'joda-time:joda-time:2.9.9'
     {{/joda}}

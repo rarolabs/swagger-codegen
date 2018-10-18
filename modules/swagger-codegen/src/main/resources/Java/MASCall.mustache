@@ -1,0 +1,56 @@
+{{>licenseInfo}}
+
+package {{invokerPackage}};
+
+import com.ca.mas.foundation.MAS;
+import com.ca.mas.foundation.MASCallback;
+import com.ca.mas.foundation.MASRequest;
+import com.ca.mas.foundation.MASResponse;
+
+import java.lang.reflect.Type;
+
+/**
+ * A call is a request that has been prepared for execution. A call can be
+ * canceled. As this object represents a single request/response pair (stream),
+ * it cannot be executed twice.
+ */
+public class MASCall<T,E> {
+    private final Parser parser;
+    private final Type type;
+    MASRequest originalRequest;
+
+    public MASCall(MASRequest originalRequest, Parser parser, Type type) {
+        this.parser = parser;
+        this.originalRequest = originalRequest;
+        this.type = type;
+    }
+
+    public void enqueue(Callback<T> callback) {
+        MAS.invoke(this.originalRequest, new MASCallback<MASResponse<E>>() {
+
+            @Override
+            public void onSuccess(MASResponse<E> response) {
+                T object;
+                try {
+                    object = (T) parser.handleResponse(response, type);
+                } catch (ApiException e) {
+                    callback.onFailure(response.getResponseCode(), e);
+                    return;
+                }
+                callback.onResponse(object, response);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if(e.getCause() != null && e.getCause() instanceof TargetApiException) {
+                    TargetApiException targetApiException = ((TargetApiException) e.getCause());
+                    if(targetApiException.getResponse() != null) {
+                        callback.onResponse(null,targetApiException.getResponse());
+                    }
+                } else {
+                    callback.onFailure(0, e);
+                }
+            }
+        });
+    }
+}

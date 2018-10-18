@@ -1,0 +1,26 @@
+{{>licenseInfo}}
+
+package {{invokerPackage}};
+
+import com.ca.mas.foundation.MASRequest;
+
+import java.lang.reflect.Type;
+
+/**
+ * A call is a request that has been prepared for execution. A call can be
+ * canceled. As this object represents a single request/response pair (stream),
+ * it cannot be executed twice.
+ */
+public class FailedMASCall<T,E> extends MASCall<T,E> {
+
+    private final ApiException exception;
+
+    public FailedMASCall(MASRequest originalRequest, Parser parser, Type type, ApiException exception) {
+        super(originalRequest,parser,type);
+        this.exception = exception;
+    }
+
+    public void enqueue(Callback<T> callback) {
+        callback.onFailure(0, exception);
+    }
+}

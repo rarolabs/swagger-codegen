@@ -1,0 +1,12 @@
+{{>licenseInfo}}
+
+package {{invokerPackage}};
+
+import com.ca.mas.foundation.MASResponse;
+
+public interface Callback<T>{
+
+  void onResponse(T object, MASResponse response);
+  void onFailure(int responseCode, Throwable t);
+
+}
