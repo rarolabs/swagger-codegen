@@ -1,0 +1,11 @@
+{{>licenseInfo}}
+
+package {{invokerPackage}};
+
+import com.ca.mas.foundation.MASRequest;
+
+public interface MASRequestInterceptor {
+
+    MASRequest intercept(MASRequest originalRequest);
+
+}

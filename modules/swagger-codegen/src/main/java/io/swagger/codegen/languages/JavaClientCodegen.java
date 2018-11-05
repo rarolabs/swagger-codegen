@@ -223,6 +223,7 @@ public class JavaClientCodegen extends AbstractJavaCodegen
             supportingFiles.add(new SupportingFile("Callback.mustache", invokerFolder, "Callback.java"));
             supportingFiles.add(new SupportingFile("Parser.mustache", invokerFolder, "Parser.java"));
             supportingFiles.add(new SupportingFile("HttpMethodHelper.mustache", invokerFolder, "HttpMethodHelper.java"));
+            supportingFiles.add(new SupportingFile("MASRequestInterceptor.mustache", invokerFolder, "MASRequestInterceptor.java"));
             additionalProperties.put("gson", "true");
         } else if (usesAnyRetrofitLibrary()) {
             supportingFiles.add(new SupportingFile("auth/OAuthOkHttpClient.mustache", authFolder, "OAuthOkHttpClient.java"));
