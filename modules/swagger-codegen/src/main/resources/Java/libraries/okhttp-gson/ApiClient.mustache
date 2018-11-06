@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import {{invokerPackage}}.MASRequestInterceptor;
+import {{invokerPackage}}.MASUriInterceptor;
 
 
 public class ApiClient {
@@ -25,7 +25,7 @@ public class ApiClient {
     private Map<String, String> defaultHeaderMap = new HashMap<String, String>();
     private String tempFolderPath = null;
     private Parser parser;
-    private List<MASRequestInterceptor> interceptors = new ArrayList<>();
+    private List<MASUriInterceptor> interceptors = new ArrayList<>();
 
 
     /*
@@ -46,7 +46,7 @@ public class ApiClient {
         this.parser = parser;
     }
 
-    public void addInterceptor(MASRequestInterceptor interceptor) {
+    public void addInterceptor(MASUriInterceptor interceptor) {
         interceptors.add(interceptor);
     }
 
@@ -274,16 +274,7 @@ public class ApiClient {
      * @throws ApiException If fail to serialize the request body object
      */
     public MASRequest buildCall(String path, String method, List<Pair> queryParams, List<Pair> collectionQueryParams, Object body, Map<String, String> headerParams, Map<String, Object> formParams, String[] authNames) throws ApiException {
-        MASRequest originalRequest = buildRequest(path, method, queryParams, collectionQueryParams, body, headerParams, formParams, authNames).build();
-        if (!interceptors.isEmpty()) {
-            for (MASRequestInterceptor interceptor : interceptors) {
-                originalRequest = interceptor.intercept(originalRequest);
-                if (originalRequest == null) {
-                    throw new IllegalStateException("MASRequestInterceptor não pode retornar null!");
-                }
-            }
-        }
-        return originalRequest;
+        return buildRequest(path, method, queryParams, collectionQueryParams, body, headerParams, formParams, authNames).build();
     }
 
     /**
@@ -301,9 +292,16 @@ public class ApiClient {
      * @throws ApiException If fail to serialize the request body object
      */
     public MASRequest.MASRequestBuilder buildRequest(String path, String method, List<Pair> queryParams, List<Pair> collectionQueryParams, Object body, Map<String, String> headerParams, Map<String, Object> formParams, String[] authNames) throws ApiException {
-
-
         final Uri uri = buildUrl(path, queryParams, collectionQueryParams);
+
+        if (!interceptors.isEmpty()) {
+            for (MASUriInterceptor interceptor : interceptors) {
+                uri = interceptor.intercept(uri);
+                if (uri == null) {
+                    throw new IllegalStateException("MASUriInterceptor não pode retornar null!");
+                }
+            }
+        }
 
         MASRequest.MASRequestBuilder requestBuilder =
                 new MASRequest.MASRequestBuilder(uri);
