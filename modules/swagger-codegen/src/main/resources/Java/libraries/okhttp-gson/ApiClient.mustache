@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import {{invokerPackage}}.MASUriInterceptor;
+
 
 public class ApiClient {
 
@@ -22,7 +24,8 @@ public class ApiClient {
     private boolean debugging = false;
     private Map<String, String> defaultHeaderMap = new HashMap<String, String>();
     private String tempFolderPath = null;
-    Parser parser;
+    private Parser parser;
+    private List<MASUriInterceptor> interceptors = new ArrayList<>();
 
 
     /*
@@ -41,6 +44,10 @@ public class ApiClient {
 
     public void setParser(Parser parser) {
         this.parser = parser;
+    }
+
+    public void addInterceptor(MASUriInterceptor interceptor) {
+        interceptors.add(interceptor);
     }
 
     /**
@@ -285,9 +292,16 @@ public class ApiClient {
      * @throws ApiException If fail to serialize the request body object
      */
     public MASRequest.MASRequestBuilder buildRequest(String path, String method, List<Pair> queryParams, List<Pair> collectionQueryParams, Object body, Map<String, String> headerParams, Map<String, Object> formParams, String[] authNames) throws ApiException {
+        Uri uri = buildUrl(path, queryParams, collectionQueryParams);
 
-
-        final Uri uri = buildUrl(path, queryParams, collectionQueryParams);
+        if (!interceptors.isEmpty()) {
+            for (MASUriInterceptor interceptor : interceptors) {
+                uri = interceptor.intercept(uri);
+                if (uri == null) {
+                    throw new IllegalStateException("MASUriInterceptor não pode retornar null!");
+                }
+            }
+        }
 
         MASRequest.MASRequestBuilder requestBuilder =
                 new MASRequest.MASRequestBuilder(uri);

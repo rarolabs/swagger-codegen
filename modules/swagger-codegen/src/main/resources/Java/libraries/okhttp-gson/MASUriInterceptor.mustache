@@ -1,0 +1,11 @@
+{{>licenseInfo}}
+
+package {{invokerPackage}};
+
+import android.net.Uri;
+
+public interface MASUriInterceptor {
+
+    Uri intercept(Uri originalUri);
+
+}
