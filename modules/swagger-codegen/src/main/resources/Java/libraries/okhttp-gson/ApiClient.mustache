@@ -292,7 +292,7 @@ public class ApiClient {
      * @throws ApiException If fail to serialize the request body object
      */
     public MASRequest.MASRequestBuilder buildRequest(String path, String method, List<Pair> queryParams, List<Pair> collectionQueryParams, Object body, Map<String, String> headerParams, Map<String, Object> formParams, String[] authNames) throws ApiException {
-        final Uri uri = buildUrl(path, queryParams, collectionQueryParams);
+        Uri uri = buildUrl(path, queryParams, collectionQueryParams);
 
         if (!interceptors.isEmpty()) {
             for (MASUriInterceptor interceptor : interceptors) {
