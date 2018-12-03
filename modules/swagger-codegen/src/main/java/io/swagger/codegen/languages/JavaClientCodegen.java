@@ -219,6 +219,7 @@ public class JavaClientCodegen extends AbstractJavaCodegen
             supportingFiles.add(new SupportingFile("ApiResponse.mustache", invokerFolder, "ApiResponse.java"));
             supportingFiles.add(new SupportingFile("JSON.mustache", invokerFolder, "JSON.java"));
             supportingFiles.add(new SupportingFile("MASCall.mustache", invokerFolder, "MASCall.java"));
+            supportingFiles.add(new SupportingFile("OnRequestListener.mustache", invokerFolder, "OnRequestListener.java"));
             supportingFiles.add(new SupportingFile("FailedMASCall.mustache", invokerFolder, "FailedMASCall.java"));
             supportingFiles.add(new SupportingFile("Callback.mustache", invokerFolder, "Callback.java"));
             supportingFiles.add(new SupportingFile("Parser.mustache", invokerFolder, "Parser.java"));

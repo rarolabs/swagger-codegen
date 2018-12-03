@@ -28,6 +28,8 @@ public class ApiClient {
     private List<MASUriInterceptor> interceptors = new ArrayList<>();
 
 
+    private OnRequestListener requestListener;
+
     /*
      * Constructor for ApiClient
      */
@@ -430,4 +432,11 @@ public class ApiClient {
         }
     }
 
+    public OnRequestListener getRequestListener() {
+        return requestListener;
+    }
+
+    public void setRequestListener(OnRequestListener requestListener) {
+        this.requestListener = requestListener;
+    }
 }

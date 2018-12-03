@@ -15,12 +15,13 @@ public class FailedMASCall<T,E> extends MASCall<T,E> {
 
     private final ApiException exception;
 
-    public FailedMASCall(MASRequest originalRequest, Parser parser, Type type, ApiException exception) {
-        super(originalRequest,parser,type);
+    public FailedMASCall(MASRequest originalRequest, Parser parser, Type type, ApiException exception, OnRequestListener requestListener) {
+        super(originalRequest,parser,type, requestListener);
         this.exception = exception;
     }
 
     public void enqueue(Callback<T> callback) {
+        onFailureListener(null, exception);
         callback.onFailure(0, exception);
     }
 }

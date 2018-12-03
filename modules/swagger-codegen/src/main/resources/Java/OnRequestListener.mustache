@@ -1,0 +1,11 @@
+{{>licenseInfo}}
+
+package {{invokerPackage}};
+
+import com.ca.mas.foundation.MASRequest;
+import com.ca.mas.foundation.MASResponse;
+
+public interface OnRequestListener {
+  void onSuccess(MASRequest originalRequest, MASResponse response);
+  void onFailure(MASRequest originalRequest, MASResponse response, Throwable e);
+}

@@ -109,9 +109,9 @@ public class {{classname}} {
         try {
             MASRequest request =  apiClient.buildCall({{localVariablePrefix}}localVarPath, "{{httpMethod}}", {{localVariablePrefix}}localVarQueryParams, {{localVariablePrefix}}localVarCollectionQueryParams, {{localVariablePrefix}}localVarPostBody, {{localVariablePrefix}}localVarHeaderParams, {{localVariablePrefix}}localVarFormParams, {{localVariablePrefix}}localVarAuthNames);
             {{#returnType}}Type {{localVariablePrefix}}localVarReturnType = new TypeToken<{{{returnType}}}>(){}.getType();{{/returnType}}
-            return new MASCall<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Void{{/returnType}},JSONObject>(request, apiClient.getParser(), {{#returnType}}localVarReturnType{{/returnType}}{{^returnType}}null{{/returnType}});
+            return new MASCall<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Void{{/returnType}},JSONObject>(request, apiClient.getParser(), {{#returnType}}localVarReturnType{{/returnType}}{{^returnType}}null{{/returnType}}, apiClient.getRequestListener());
         } catch (ApiException e) {
-            return new FailedMASCall<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Void{{/returnType}},JSONObject>(null,null,null,e);
+            return new FailedMASCall<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Void{{/returnType}},JSONObject>(null,null,null,e,apiClient.getRequestListener());
         }
     }
 

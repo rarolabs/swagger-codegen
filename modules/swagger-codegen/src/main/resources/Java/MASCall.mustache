@@ -15,15 +15,22 @@ import java.lang.reflect.Type;
  * canceled. As this object represents a single request/response pair (stream),
  * it cannot be executed twice.
  */
+/**
+ * A call is a request that has been prepared for execution. A call can be
+ * canceled. As this object represents a single request/response pair (stream),
+ * it cannot be executed twice.
+ */
 public class MASCall<T,E> {
     private final Parser parser;
     private final Type type;
+    protected final OnRequestListener requestListener;
     MASRequest originalRequest;
 
-    public MASCall(MASRequest originalRequest, Parser parser, Type type) {
+    public MASCall(MASRequest originalRequest, Parser parser, Type type, OnRequestListener requestListener) {
         this.parser = parser;
         this.originalRequest = originalRequest;
         this.type = type;
+        this.requestListener = requestListener;
     }
 
     public void enqueue(Callback<T> callback) {
@@ -35,9 +42,11 @@ public class MASCall<T,E> {
                 try {
                     object = (T) parser.handleResponse(response, type);
                 } catch (ApiException e) {
+                    onFailureListener(response, e);
                     callback.onFailure(response.getResponseCode(), e);
                     return;
                 }
+                    onSuccessListener(response);
                 callback.onResponse(object, response);
             }
 
@@ -46,12 +55,26 @@ public class MASCall<T,E> {
                 if(e.getCause() != null && e.getCause() instanceof TargetApiException) {
                     TargetApiException targetApiException = ((TargetApiException) e.getCause());
                     if(targetApiException.getResponse() != null) {
+                        onFailureListener(targetApiException.getResponse(), e);
                         callback.onResponse(null,targetApiException.getResponse());
                     }
                 } else {
+                    onFailureListener(null, e);
                     callback.onFailure(0, e);
                 }
             }
         });
+    }
+
+    protected void onSuccessListener(MASResponse response) {
+        if (this.requestListener != null) {
+            this.requestListener.onSuccess(this.originalRequest, response);
+        }
+    }
+
+    protected void onFailureListener(MASResponse response, Throwable e) {
+        if (this.requestListener != null) {
+            this.requestListener.onFailure(this.originalRequest, response, e);
+        }
     }
 }
