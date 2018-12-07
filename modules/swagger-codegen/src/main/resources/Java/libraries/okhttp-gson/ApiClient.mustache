@@ -95,6 +95,11 @@ public class ApiClient {
         return this;
     }
 
+    public ApiClient removeDefaultHeader(String key) {
+        defaultHeaderMap.remove(key);
+        return this;
+    }
+
     /**
      * Check that whether debugging is enabled for this API client.
      *
